@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <!-- 样式 -->
+    {include file="common/meta" /}
+    <!-- js文件 -->
+    {include file="common/script" /}
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <style>
+      .layui-form-label{
+          width: 140px;
+      }
+      .layui-form-item .layui-input-inline{
+          width: 300px;
+      }
+  </style>
+  <body>
+    <div class="x-body">
+        <form class="layui-form" method="post" enctype="multipart/form-data">
+          <div class="layui-form-item">
+              <label for="title" class="layui-form-label">
+                配置标题
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="title" name="title" required value="{$config.title}"
+                  autocomplete="off" class="layui-input" placeholder="配置标题">
+              </div>
+          </div>
+          <div class="layui-form-item">
+              <label for="key" class="layui-form-label">
+                  配置名称
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="key" name="key" required value="{$config.key}"
+                  autocomplete="off" class="layui-input" placeholder="配置名称">
+              </div>
+              
+          </div>
+          
+          <div class="layui-form-item">
+            <label class="layui-form-label">配置的类型</label>
+            <div class="layui-input-inline">
+              <select name="type" lay-verify="required" lay-filter="type">
+				{if condition="$config.type == 'text' "}
+                <option value="text" selected>文本</option>
+				<option value="file">文件</option>
+				{elseif condition="$config.type == 'file' "/}
+				<option value="text">文本</option>
+                <option value="file" selected>文件</option>
+				{else /}
+				<option value="file" selected disabled>请选择</option>
+				<option value="text">文本</option>
+				<option value="file">文件</option>
+				{/if}
+              </select>
+            </div>
+          </div>
+
+          <!-- 配置的值 文本类型 -->
+		  <div class="layui-form-item" id="text">
+            <label class="layui-form-label">配置的值(文本类型)</label>
+            <div class="layui-input-inline">
+			  {eq name="config.type" value="text"}
+              <input type="text" name="value" value="{$config.value}" placeholder="配置的值" class="layui-input" />
+			  {else/}
+			  <input type="text" name="value" placeholder="配置的值" class="layui-input" />
+			  {/eq}
+            </div>
+          </div>
+		
+		  <div class="layui-form-item" id="file" hidden>
+            <label class="layui-form-label">
+              配置的值(文件类型)
+            </label>
+            <div class="layui-input-block layui-col-lg4">
+              <div class="layui-upload">
+                <button type="button" class="layui-btn" id="type">
+                  上传文件
+                </button>
+                <div class="layui-upload-list">
+                  <!-- 预览图片 -->
+				  {eq name="config.type" value="file"}
+				  <img class="layui-upload-img x-circle" id="preview" src="{$config.value}"/>
+				  {else/}
+				  <img class="layui-upload-img x-circle" id="preview"/>
+				  {/eq}
+                </div>
+              </div>   
+            </div>
+          </div>
+
+          <!-- 提交 -->
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  增加
+              </button>
+              <button type="reset"  class="layui-btn layui-btn-danger">重置</button>
+          </div>
+      </form>
+    </div>
+    <script>
+        layui.use(['form','layer','jquery','upload'], function(){
+            $ = layui.jquery;
+            var form = layui.form
+            ,layer = layui.layer
+			,upload = layui.upload;
+
+			//监听提交
+			form.on('select(type)', function(data){
+			    // 获取选择的项
+			    var value = data.value;
+			  //   console.log(value);
+			  if(value == 'file'){
+			      $('#text').attr('hidden','hidden');
+			      $('#file').removeAttr('hidden');
+			  }else{
+			      $('#file').attr('hidden','hidden');
+			      $('#text').removeAttr('hidden');
+			  }
+			
+			});
+
+
+		    //执行实例
+		    var uploadInst = upload.render({
+		      elem: '#type' //绑定元素
+		      ,auto: false
+		      ,file: 'file'
+		      ,choose: function(obj){
+		          //将每次选择的文件追加到文件队列
+		          var files = obj.pushFile();
+		          
+		          //预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
+		          obj.preview(function(index, file, result){
+		            console.log(index); //得到文件索引
+		            console.log(file); //得到文件对象
+		            console.log(result); //得到文件base64编码，比如图片
+		            
+		      	  $('#preview').attr('src', result);
+		            //obj.resetFile(index, file, '123.jpg'); //重命名文件名，layui 2.3.0 开始新增
+		            
+		            //这里还可以做一些 append 文件列表 DOM 的操作
+		            
+		            //obj.upload(index, file); //对上传失败的单个文件重新上传，一般在某个事件中使用
+		            //delete files[index]; //删除列表中对应的文件，一般在某个事件中使用
+		          });
+		        }
+		      ,done: function(res){
+		        //上传完毕回调
+		      }
+		      ,error: function(){
+		        //请求异常回调
+		      }
+		    });
+          
+			$(document).ready(function(){
+				var value = $('select[name="type"] option:selected').val();
+				//   console.log(value);
+				if(value == 'file'){
+				    $('#text').attr('hidden','hidden');
+				    $('#file').removeAttr('hidden');
+				}else{
+				    $('#file').attr('hidden','hidden');
+				    $('#text').removeAttr('hidden');
+				}
+			});
+        });
+		
+    </script>
+  </body>
+
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <!-- 样式 -->
+    {include file="common/meta" /}
+    <!-- js文件 -->
+    {include file="common/script" /}
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div class="x-body">
+        <form class="layui-form" method="post">
+                  <div class="layui-form-item">
+                      <label for="username" class="layui-form-label">
+                          <span class="x-red">*</span>称呼
+                      </label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="username" name="username" readonly
+                          autocomplete="off" class="layui-input" value="{$username}">
+                      </div>
+                      <div class="layui-form-mid layui-word-aux">
+                          <span class="x-red">*</span>用户的真实姓名
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label for="sex" class="layui-form-label">
+                          <span class="x-red">*</span>性别
+                      </label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="sex" name="sex" readonly
+                          autocomplete="off" class="layui-input" value="{$sex == 0 ? '私密' : ($sex == 1 ? '男生':'女生')}">
+                      </div>
+                      
+                  </div>
+                  
+                  <div class="layui-form-item">
+                      <label class="layui-form-label"><span class="x-red">*</span>头像</label>
+                      <div class="layui-input-block">
+						<td>
+							{empty name="avatar"}
+							<img src="/static/home/images/avatar/00.jpg" alt="{$username}" class="x-circle/>
+							{else/}
+							<img src="{$avatar}" alt="{$username}" class="x-circle"/>
+							{/empty}
+						</td>
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label for="salt" class="layui-form-label">
+                          <span class="x-red">*</span>盐值
+                      </label>
+                      <div class="layui-input-inline">
+                          <input type="text" name="salt" autocomplete="off" 
+						  readonly class="layui-input" value="{$salt}">
+                      </div>
+                      <div class="layui-form-mid layui-word-aux">
+                          适用于用户密码加密
+                      </div>
+                  </div>
+                  <div class="layui-form-item">
+                      <label for="point" class="layui-form-label">
+                          <span class="x-red">*</span>积分
+                      </label>
+                      <div class="layui-input-inline">
+                          <input type="text" id="point" name="point" readonly
+                          autocomplete="off" class="layui-input" value="{$point}">
+                      </div>
+					  <div class="layui-form-mid layui-word-aux">
+					      收益资产
+					  </div>
+                  </div>
+				  <div class="layui-form-item">
+				      <label for="vip" class="layui-form-label">
+				          <span class="x-red">*</span>vip等级
+				      </label>
+				      <div class="layui-input-inline">
+				          <input type="text" id="vip" name="renewpass" readonly
+				          autocomplete="off" class="layui-input" value="{$vip}">
+				      </div>
+				  </div>
+				  <div class="layui-form-item">
+				      <label for="createtime" class="layui-form-label">
+				          <span class="x-red">*</span>创建时间
+				      </label>
+				      <div class="layui-input-inline">
+				          <input type="text" id="createtime" name="createtime" readonly
+				          autocomplete="off" class="layui-input" value="{$createtime|date="y-m-d",###}">
+				      </div>
+				  </div>
+                  <div class="layui-form-item">
+                      <a href="javascript:history.back(-1)" class="layui-btn layui-btn-primary">返回</a>
+                  </div>
+        </form>
+    </div>
+    <script>
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+        });
+    </script>
+  </body>
+
+</html>
