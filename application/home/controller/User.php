@@ -25,17 +25,21 @@ class User extends Userpage
     {
 		$this->UserModel = model('User');
 		$this->RegionModel = model('Region');
+		$this->PostModel = model('Post');
+		$this->CommentModel = model('Comment');
 		$this->request = Request::instance();
     }
 
 	public function activate()
 	{
+		$this->title('激活邮箱',1);
 		$this->isLogin();
 		return $this->fetch('user/activate');
 	}
 	
 	public function forget()
 	{
+		$this->title('找回密码/重置密码',1);
 		$this->isLogin();
 		return $this->fetch('user/forget');
 	}
@@ -73,6 +77,18 @@ class User extends Userpage
 	{
 		$this->isLogin();
 		$this->title('我的发帖',1);
+		
+		$limit = 10;
+		$count = $this->PostModel->count();
+		$PostList = $this->PostModel->where('userid',cookie('LoginUser')['id'])
+				->order('createtime','desc')->paginate($limit);
+		
+		$total = count($PostList);
+		
+		$this->assign([
+		    'PostList' => $PostList,
+			'total' => $total
+		]);
 		return $this->fetch('user/index');
 	}
 	
@@ -131,6 +147,8 @@ class User extends Userpage
 	{
 		$this->isLogin();
 		$this->title('我的消息',1);
+		$post = $this->CommentModel;
+		// $this->CommentModel->where('id',);
 		return $this->fetch('user/message');
 	}
 	

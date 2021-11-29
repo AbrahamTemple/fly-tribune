@@ -25,13 +25,13 @@
     </a>
     <ul class="layui-nav fly-nav layui-hide-xs">
       <li class="layui-nav-item layui-this">
-        <a href="/"><i class="iconfont icon-jiaoliu"></i>交流</a>
+        <a href="{:url('/')}"><i class="iconfont icon-jiaoliu"></i>交流</a>
       </li>
       <li class="layui-nav-item">
-        <a href="case/case.html"><i class="iconfont icon-iconmingxinganli"></i>案例</a>
+        <a href="{:url('/case')}"><i class="iconfont icon-iconmingxinganli"></i>排行榜</a>
       </li>
       <li class="layui-nav-item">
-        <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>框架</a>
+        <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>官网</a>
       </li>
     </ul>
     
@@ -39,27 +39,15 @@
       
       <!-- 未登入的状态 -->
 	  {if condition="!$Think.cookie.LoginUser"}
-      {eq name="tier" value="0"}
       <li class="layui-nav-item">
-        <a class="iconfont icon-touxiang layui-hide-xs" href="user/login.html"></a>
+        <a class="iconfont icon-touxiang layui-hide-xs" href="{:url('user/login')}"></a>
       </li>
       <li class="layui-nav-item">
-        <a href="user/login.html">登入</a>
+        <a href="{:url('user/login')}">登入</a>
       </li>
       <li class="layui-nav-item">
-        <a href="user/reg.html">注册</a>
+        <a href="{:url('user/reg')}">注册</a>
       </li>
-      {else/}
-      <li class="layui-nav-item">
-        <a class="iconfont icon-touxiang layui-hide-xs" href="../user/login.html"></a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="../user/login.html">登入</a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="../user/reg.html">注册</a>
-      </li>
-      {/eq}
       <li class="layui-nav-item layui-hide-xs">
         <a href="/app/qq/" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" title="QQ登入" class="iconfont icon-qq"></a>
       </li>
@@ -87,3 +75,29 @@
     </ul>
   </div>
 </div>
+
+{eq name="tier" value="0"}
+<div class="fly-panel fly-column">
+  <div class="layui-container">
+    <ul class="layui-clear">
+	  <li class="layui-hide-xs"><a href="{:url('home/index/index')}">首页</a></li>
+      {foreach $CateList as $v}
+        <li class="layui-hide-xs"><a href="{:url('home/index/index',['cateid' => $v['id']])}">{$v.name}</a></li> 
+      {/foreach}
+      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li> 
+      
+      <!-- 用户登入后显示 -->
+	  {if condition="$Think.cookie.LoginUser"}
+      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="user/index.html">我发表的贴</a></li> 
+      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="user/index.html#collection">我收藏的贴</a></li> 
+	  {/if}
+    </ul> 
+    
+	
+    <div class="fly-column-right layui-hide-xs"> 
+      <span class="fly-search"><i class="layui-icon"></i></span> 
+      <a href="{:url('/home/post/add')}" class="layui-btn">发表新帖</a> 
+    </div> 
+  </div>
+</div>
+{/eq}

@@ -9,6 +9,11 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+use think\Route;
+
+Route::rule('/','/home/index');
+Route::rule('/case','/home/cases/cases');
+
 return [
     '__pattern__' => [
         'name' => '\w+',

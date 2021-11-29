@@ -2,7 +2,6 @@
 namespace app\common\model;
 
 use think\Db;
-use think\Request;
 use think\Model;
 
 class Post extends Model
@@ -20,6 +19,15 @@ class Post extends Model
         //TODO:自定义的初始化
     }
 
+	public function user(){
+        return $this->belongsTo('User','userid','id',[],'LEFT')->setEagerlyType(0);
+    }
+
+	public function cate(){
+        return $this->belongsTo('Cate','cateid','id',[],'LEFT')->setEagerlyType(0);
+    }
+
+	//得到所有
     public function getPost($count){
 
         return Db::name('post')
@@ -32,6 +40,18 @@ class Post extends Model
 					->select();
 
     }
+	
+	public function getOne($id){
+	
+	    return Db::name('post')
+					->alias('p')
+					->join('pre_user u','p.userid = u.id')
+					->join('pre_cate c','p.cateid = c.id')
+					->where('p.state',1)
+					->field('p.*,u.id as uid,u.avatar,u.username,u.vip,c.name,c.weigh')
+					->find($id);
+	
+	}
 	
 	public function getRelatedPost($where){
 		

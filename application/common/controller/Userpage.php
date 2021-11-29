@@ -96,6 +96,7 @@ class Userpage extends Controller
 		return $this->fetch('other/404');
 	}
 	
+	
 	/**
 	     * 返回数据的方法
 	     * @access protected

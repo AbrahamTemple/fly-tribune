@@ -1,27 +1,5 @@
  
-<div class="fly-panel fly-column">
-  <div class="layui-container">
-    <ul class="layui-clear">
-	  <li class="layui-hide-xs {$cateid == 0 ? 'layui-this' : ''}"><a href="{:url('home/index/index')}">首页</a></li>
-      {foreach $CateList as $v}
-        <li class="layui-hide-xs {$cateid == $v.id ? 'layui-this' : ''}"><a href="{:url('home/index/index',['cateid' => $v['id']])}">{$v.name}</a></li> 
-      {/foreach}
-      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li> 
-      
-      <!-- 用户登入后显示 -->
-	  {if condition="$Think.cookie.LoginUser"}
-      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="user/index.html">我发表的贴</a></li> 
-      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="user/index.html#collection">我收藏的贴</a></li> 
-	  {/if}
-    </ul> 
-    
-	
-    <div class="fly-column-right layui-hide-xs"> 
-      <span class="fly-search"><i class="layui-icon"></i></span> 
-      <a href="{:url('/home/post/add')}" class="layui-btn">发表新帖</a> 
-    </div> 
-  </div>
-</div>
+
 
 
 <div class="layui-container">
@@ -41,7 +19,7 @@
             </a>
             <h2>
               <a class="layui-badge">动态</a>
-              <a href="jie/detail.html">{$vo.title}</a>
+              <a href="{:url('post/detail',['id' => $vo.id])}">{$vo.title}</a>
             </h2>
             <div class="fly-list-info">
               <a href="user/home.html" link>
@@ -58,7 +36,7 @@
               <span class="layui-badge fly-badge-accept layui-hide-xs">{$vo.name}</span>
               {/notempty}
               <span class="fly-list-nums"> 
-                <i class="iconfont icon-pinglun1" title="回答"></i> {$vo.visit}
+                <i class="iconfont icon-pinglun1" title="回答"></i> {$vo.ask}
               </span>
             </div>
             <div class="fly-list-badge">
@@ -118,7 +96,7 @@
 				<span class="layui-badge fly-badge-accept layui-hide-xs">未结</span>
               {/if}
               <span class="fly-list-nums"> 
-                <i class="iconfont icon-pinglun1" title="回答"></i> {$item.visit}
+                <i class="iconfont icon-pinglun1" title="回答"></i> {$item.ask}
               </span>
             </div>
             <div class="fly-list-badge">
@@ -130,7 +108,7 @@
 		
         <div style="text-align: center">
           <div class="laypage-main">
-            <a href="jie/index.html" class="laypage-next">更多求解</a>
+            <a href="{:url('post/index')}" class="laypage-next">更多求解</a>
           </div>
         </div>
 
