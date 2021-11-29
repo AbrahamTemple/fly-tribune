@@ -1,6 +1,6 @@
 /*
-SQLyog Ultimate v13.1.1 (64 bit)
-MySQL - 10.4.11-MariaDB : Database - ask
+SQLyog Community v13.1.7 (64 bit)
+MySQL - 5.7.26 : Database - ask
 *********************************************************************
 */
 
@@ -28,7 +28,7 @@ CREATE TABLE `pre_admin` (
   `salt` char(150) NOT NULL COMMENT '密码盐',
   `avatar` varchar(255) DEFAULT NULL COMMENT '头像',
   `state` enum('0','1') DEFAULT '1' COMMENT '1、正常\n0、禁用',
-  `create_time` datetime DEFAULT current_timestamp() COMMENT '创建时间',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `delete_time` int(11) DEFAULT NULL COMMENT '软删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `idx_admin_username` (`username`) USING BTREE
@@ -48,7 +48,7 @@ DROP TABLE IF EXISTS `pre_cate`;
 CREATE TABLE `pre_cate` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(255) DEFAULT NULL COMMENT '分类名称',
-  `weigh` int(11) DEFAULT 0 COMMENT '权重',
+  `weigh` int(11) DEFAULT '0' COMMENT '权重',
   `delete_time` int(11) DEFAULT NULL COMMENT 'null、正常',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `idx_cate_name` (`name`) USING BTREE
@@ -89,10 +89,10 @@ DROP TABLE IF EXISTS `pre_comment`;
 
 CREATE TABLE `pre_comment` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `pid` int(10) unsigned DEFAULT 0 COMMENT '上级ID',
-  `content` text DEFAULT NULL COMMENT '正文内容',
+  `pid` int(10) unsigned DEFAULT '0' COMMENT '上级ID',
+  `content` text COMMENT '正文内容',
   `createtime` int(10) unsigned DEFAULT NULL COMMENT '评论时间',
-  `like` text DEFAULT NULL COMMENT '点赞数',
+  `like` bigint(11) DEFAULT NULL COMMENT '点赞数',
   `userid` int(10) unsigned DEFAULT NULL COMMENT '用户ID',
   `postid` int(10) unsigned DEFAULT NULL COMMENT '帖子ID',
   PRIMARY KEY (`id`) USING BTREE,
@@ -100,9 +100,13 @@ CREATE TABLE `pre_comment` (
   KEY `idx_comment_postid` (`postid`) USING BTREE,
   CONSTRAINT `fk_comment_postid` FOREIGN KEY (`postid`) REFERENCES `pre_post` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fk_comment_userid` FOREIGN KEY (`userid`) REFERENCES `pre_user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='帖子评论表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='帖子评论表';
 
 /*Data for the table `pre_comment` */
+
+insert  into `pre_comment`(`id`,`pid`,`content`,`createtime`,`like`,`userid`,`postid`) values 
+(1,0,'香菇那个蓝瘦，这是一条被采纳的回帖',1597821344,66,3,1),
+(2,0,'蓝瘦那个香菇，这是一条没被采纳的回帖',1563520544,0,4,1);
 
 /*Table structure for table `pre_config` */
 
@@ -112,11 +116,11 @@ CREATE TABLE `pre_config` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `title` varchar(255) NOT NULL COMMENT '配置标题',
   `key` varchar(255) NOT NULL COMMENT '配置名称',
-  `value` text DEFAULT NULL COMMENT '配置的值',
+  `value` text COMMENT '配置的值',
   `type` enum('text','file') NOT NULL DEFAULT 'text' COMMENT '配置选项的类型',
   `deletetime` int(11) DEFAULT NULL COMMENT '软删除字段',
-  `createtime` datetime DEFAULT current_timestamp() COMMENT '创建时间',
-  `updatetime` datetime DEFAULT current_timestamp() COMMENT '更新时间',
+  `createtime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updatetime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='配置表';
 
@@ -136,8 +140,8 @@ CREATE TABLE `pre_pay` (
   `adminid` int(10) unsigned DEFAULT NULL COMMENT '管理员外键',
   `point` int(10) unsigned DEFAULT NULL COMMENT '充值数量',
   `createtime` int(11) unsigned DEFAULT NULL COMMENT '充值时间',
-  `gallery` text DEFAULT NULL COMMENT '截图图集',
-  `content` text DEFAULT NULL COMMENT '备注内容',
+  `gallery` text COMMENT '截图图集',
+  `content` text COMMENT '备注内容',
   `status` enum('0','1','2') DEFAULT '0' COMMENT '状态：0：未审核  1：已审核  2：审核未通过',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `key_pay_userid` (`userid`) USING BTREE,
@@ -155,11 +159,12 @@ DROP TABLE IF EXISTS `pre_post`;
 CREATE TABLE `pre_post` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `title` varchar(255) DEFAULT NULL COMMENT '标题',
-  `content` text DEFAULT NULL COMMENT '正文内容',
+  `content` text COMMENT '正文内容',
   `point` int(11) DEFAULT NULL COMMENT '悬赏积分',
   `createtime` int(11) DEFAULT NULL COMMENT '创建时间',
   `state` enum('1','2','3') DEFAULT NULL COMMENT '1：置顶\n2：精华\n3：热门',
-  `visit` varchar(255) DEFAULT '0' COMMENT '访问次数',
+  `ask` bigint(11) DEFAULT '0' COMMENT '回答次数',
+  `visit` bigint(11) DEFAULT '0' COMMENT '访问次数',
   `userid` int(10) unsigned DEFAULT NULL COMMENT '用户ID发布人',
   `accept` int(10) unsigned DEFAULT NULL COMMENT '采纳人ID',
   `cateid` int(10) unsigned DEFAULT NULL COMMENT '分类ID',
@@ -175,11 +180,11 @@ CREATE TABLE `pre_post` (
 
 /*Data for the table `pre_post` */
 
-insert  into `pre_post`(`id`,`title`,`content`,`point`,`createtime`,`state`,`visit`,`userid`,`accept`,`cateid`,`delete_time`) values 
-(1,'基于 layui 的极简社区页面模版',NULL,60,1635300486,'1','66',2,2,1,NULL),
-(2,'基于 layui 的极简社区页面模版',NULL,30,1635307930,'1','98',5,4,2,NULL),
-(3,'基于 layui 的极简社区页面模版',NULL,40,1635309930,'1','102',3,NULL,4,NULL),
-(4,'基于 layui 的极简社区页面模版',NULL,50,1635317930,'1','23',4,4,2,NULL);
+insert  into `pre_post`(`id`,`title`,`content`,`point`,`createtime`,`state`,`ask`,`visit`,`userid`,`accept`,`cateid`,`delete_time`) values 
+(1,'基于 layui 的极简社区页面模版','<p>\r\n	该模版由 layui官方社区（\r\n	<a href=\"http://fly.layui.com/\" target=\"_blank\">\r\n		fly.layui.com\r\n	</a>\r\n	）倾情提供，只为表明我们对 layui 执着的信念、以及对未来持续加强的承诺。该模版基于 layui 搭建而成，可作为极简通用型社区的页面支撑。\r\n</p>\r\n<p>\r\n	更新日志：\r\n</p>\r\n<pre>\r\n	# v3.0 2017-11-30 * 采用 layui 2.2.3 作为 UI 支撑 * 全面同步最新的 Fly 社区风格，各种细节得到大幅优化\r\n	* 更友好的响应式适配能力\r\n</pre>\r\n下载\r\n<hr>\r\n<p>\r\n	官网：\r\n	<a href=\"http://www.layui.com/template/fly/\" target=\"_blank\">\r\n		http://www.layui.com/template/fly/\r\n	</a>\r\n	<br>\r\n	码云：\r\n	<a href=\"https://gitee.com/sentsin/fly/\" target=\"_blank\">\r\n		https://gitee.com/sentsin/fly/\r\n	</a>\r\n	<br>\r\n	GitHub：\r\n	<a href=\"https://github.com/layui/fly\" target=\"_blank\">\r\n		https://github.com/layui/fly\r\n	</a>\r\n</p>\r\n封面\r\n<hr>\r\n<p>\r\n	<img src=\"/static/home/images/avatar/00.jpg\" alt=\"Fly社区\" layer-index=\"0\">\r\n</p>',60,1635300486,'1',4,89,2,3,1,NULL),
+(2,'基于 layui 的极简社区页面模版','<h1>使用函数</h1>\r\n<p>如果函数有多个参数需要调用，则使用：</p>\r\n<pre>\r\n{$create_time|date=\"y-m-d\",###}\r\n</pre>\r\n',30,1635307930,'1',6,98,5,4,2,NULL),
+(3,'基于 layui 的极简社区页面模版',NULL,40,1635309930,'1',23,102,3,NULL,4,NULL),
+(4,'基于 layui 的极简社区页面模版',NULL,50,1635317930,'1',0,23,4,4,2,NULL);
 
 /*Table structure for table `pre_region` */
 
@@ -4553,9 +4558,9 @@ CREATE TABLE `pre_user` (
   `district` int(255) DEFAULT NULL COMMENT '区',
   `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
   `createtime` int(11) DEFAULT NULL COMMENT '创建时间',
-  `content` text DEFAULT NULL COMMENT '个人简介',
-  `point` int(10) unsigned DEFAULT 0 COMMENT '积分',
-  `vip` int(10) unsigned DEFAULT 0 COMMENT 'vip',
+  `content` text COMMENT '个人简介',
+  `point` int(10) unsigned DEFAULT '0' COMMENT '积分',
+  `vip` int(10) unsigned DEFAULT '0' COMMENT 'vip',
   `auth` enum('0','1') DEFAULT '0' COMMENT '认证：0:未认证 1:已认证',
   `delete_time` int(11) DEFAULT NULL COMMENT '软删除',
   PRIMARY KEY (`id`) USING BTREE,
@@ -4578,9 +4583,9 @@ DROP TABLE IF EXISTS `pre_user_record`;
 
 CREATE TABLE `pre_user_record` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `point` int(10) unsigned DEFAULT 0 COMMENT '变化的积分',
+  `point` int(10) unsigned DEFAULT '0' COMMENT '变化的积分',
   `createtime` int(11) DEFAULT NULL COMMENT '消费时间',
-  `content` text DEFAULT NULL COMMENT '消费描述',
+  `content` text COMMENT '消费描述',
   `state` enum('1','2','3','4') DEFAULT NULL COMMENT '状态消费积分状态\n    1、发布\n    2、采纳\n    3、充值\n    4、签到',
   `userid` int(10) unsigned DEFAULT NULL COMMENT '用户外键',
   PRIMARY KEY (`id`) USING BTREE,
